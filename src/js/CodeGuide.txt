@@ -1,0 +1,151 @@
+physics.js
+
+this : this (JavaScript counterpart for 'self')
+
+GROUND_WIDTH : const (ground width)
+GROUND_HALF_WIDTH : const (ground half width = net pillar x coordinate)
+PLAYER_LENGTH : const (pikachu length : width = height)
+PLAYER_HALF_LENGTH : const (player half length)
+PLAYER_TOUGHING_GROUND_Y_COORD : const (player's y coordinate when they are touching ground)
+BALL_RADIUS : const (ball radius)
+BALL_TOUCHING_GROUND_Y_COORD : const (ball's y coordinate when it is touching ground)
+NET_PILLAR_HALF_WIDTH : const (pillar half width - not shown in screen)
+NET_PILLAR_TOP_TOP_Y_COORD : const (pillar top's top y coordinate)
+NET_PILLAR_TOP_BOTTOM_Y_COORD : const (pillar top's bottom y coordinate)
+
+xDirection : number (-1 : left input, 1 : right input , 0 : no input)
+yDirection : number (-1 : up input, 1 : down input, 0 : no input)
+powerHit : number (0 : auto / no input, 1 : non-auto input)
+powerKeyDown : boolean (false : no key input, true : key input)
+
+PikaPhysics : class (physics engine frontend)
+    
+    player1 : Player(isPlayer2 === false, isPlayer1Computer)
+    player2 : Player(isPlayer2 === true, isPlayer2Computer)
+    ball : Ball(isPlayer2Serve)
+    
+    runEngineForNextFrame : function (calculate physics for next frame)
+
+Player : class (player)
+
+    initializeForNewRound : function    
+
+    isPlayer2 : boolean (is this player on the right side?)
+    isComputer : boolean (is controlled by computer?)
+    
+    divingDirection : number (-1 : left, 1 : right, 0 : no diving)
+    lyingDownDurationLeft : number (how long left until pikachu stands up)
+    isWinner : boolean (did this player win?)
+    gameEnded : boolean
+    
+    sound : [boolean, boolean, boolean] (pipikachu sound, pika sound, chu sound)
+    
+    x : number (x position, RIGHT is positive)
+    y : number (y position, DOWN is positive)
+    yVelocity : number (y direction velocity)
+    isCollisionWIthBallHappened : boolean
+    
+    state : number (0 ~ 7)
+        0 : normal
+        1 : jumping
+        2 : jumping_and_power_hitting
+        3 : diving
+        4 : lying_down_after_diving
+        5 : win!
+        6 : lost...
+        7 : falling
+    frameNumber : number (0 ~ 2 : How player is shown)
+    normalStatusArmSwingDirection : number
+    delayBeforeNextFrame : number
+    holding : boolean (if the player is holding the ball)
+    holdingFrame : const
+
+    computerBoldness : number (0 ~ 4 : Action style of computer AI = We don't need to consider this value)
+    computerWhereToStandBy : number (0 ~ 1 : Decided by letComputerDecideUserInput function = No need to consider)
+
+Ball : class (ball)
+    
+    initializeForNewRound : function
+    
+    expectedLandingPointX : number (x coord of expected landing point)
+    rotation : number (0 ~ 5 : ball rotation frame # selector)
+    fineRotation : number (?????)
+    futureFineRotation : number
+    punchEffectX : number (x coord for punch effect)
+    punchEffectY : number (y coord for punch effect)
+    punchEffectRadius : number (?????)
+    
+    thrower : number (0 ~ 2 : who threw the ball?)
+    isPowerHit : boolean (is power hit)
+
+    xVelocity : number (x velocity)
+    yVelocity : number (y velocity)
+    
+    x : number (x coordinate)
+    previousX : number (for trailing effect)
+    previousPreviousX : number
+    y : number (y coordinate)
+    previousY : number (for trailing effect)
+    previousPreviousY : number
+
+physicsEngine : function (actual physics engine)
+
+    player1 : Player(isPlayer2 === false, isPlayer1Computer)
+    player2 : Player(isPlayer2 === true, isPlayer2Computer)
+    ball : Ball(isPlayer2Serve)
+    userInputArray : PikaUserInput
+
+    Algorithm flowchart
+    - processCollisionBetweenBallAndWorldAndSetBallPosition(ball)
+    - calculate_expected_landing_point_x_for(ball)
+    - processPlayerMovementAndSetPlayerPosition(player, userInputArray[i], theOtherPlayer, ball) [for each player]
+    - isCollisionBetweenBallAndPlayerHappened(ball, player.x, player.y, player.state) [for each player]
+    - processCollisionBetweenBallAndPlayer(ball, player.x, userInputArray[i], player.state) [for each player]
+
+----------
+
+Things That Should Be Added By Us
+
+GOAL_TOP_Y_COORD : const (goal top's y coordinate)
+GOAL_TOP_HALF_HEIGHT : const (half of goal top's height)
+GOAL_TOP_WIDTH : const (goal top's x width)
+
+In function 'physicsEngine(player1, player2, ball, userInputArray)' [Line #321 as for 20210429],
+fix the function to accomodate all the changes below.
+
+In function 'processCollisionBetweenBallAndWorldAndSetBallPosition(ball)' [Line #481 as for 20210429],
+add collision between the goal top and the ball. (O)
+
+In function 'processPlayerMovementAndSetPlayerPosition(player, userInput, theOtherPlayer, ball)' [Line #579 as for 20210429],
+1. edit player's x-direction world boundary. (O)
+2. add player's interaction with goal top.
+3. add collision between players.
+
+In function 'processCollisionBetweenBallAndPlayer(ball, playerX, userInput, playerState)' [Line #831 as for 20210429],
+check if the function does not cause any problem when two players touch with the ball at the same time
+and fix the problem if it happens.
+
+Write new function 'isInGoalRange(ball)'
+to check if ball is inside the goal area. (O)
+
+Write new function 'isCollisionBetweenPlayers(player1, player2)'
+to check if collision between players has happened.
+
+Write new function 'processCollisionBetweenPlayers(player1, player2, ball, userInputArray)'
+to process the collision between players and also adjust the ball location according to the collision status.
+
+==========
+
+pikavolley.js
+
+PikachuVolleyball : class (main game system)
+    
+    physics : PikaPhysics(isPlayer1Computer, isPlayer2Computer) [from ./physics.js]
+    audio : PikaAudio(resources) [from ./audio.js]
+
+----------
+
+Things That Should Be Added By Us
+
+In class 'PikachuVolleyball(stage, resources)' [Line #15 as of 20210429],
+change scoring mechanism. (O)

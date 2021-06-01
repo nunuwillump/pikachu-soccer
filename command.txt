@@ -1,0 +1,5 @@
+빌드
+npx webpack --mode=development
+
+실행
+npx http-server
