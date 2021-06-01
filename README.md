@@ -2,7 +2,7 @@
 
 피카츄 축구는 피카츄 피구와 배구를 기반으로 만든 게임입니다. @gorisanson 님의 [피카츄 배구 웹 버전](https://gorisanson.github.io/pikachu-volleyball/ko)을 수정하여 제작하였습니다.
 
-https://nunuwillump.github.io/pikachusoccer/ 에서 피카츄 축구를 플레이 할 수 있습니다.
+https://nunuwillump.github.io/pikachu-soccer/ 에서 피카츄 축구를 플레이 할 수 있습니다.
 
 <img src="/screenshot.png" width="640">
 
