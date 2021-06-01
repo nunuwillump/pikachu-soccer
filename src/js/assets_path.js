@@ -5,7 +5,7 @@
 
 const ROOT_PATH = (process.env.NODE_ENV==="development")
     ? "/src"
-    : "/pikachusoccer/src";
+    : "/pikachu-soccer/src";
 
 export const ASSETS_PATH = {
   SPRITE_SHEET: ROOT_PATH + '/assets/images/sprite_sheet.json',
